@@ -34,7 +34,7 @@ def lowlight(image_path):
 	data_lowlight = data_lowlight.cuda().unsqueeze(0)
 
 	DCE_net = model.enhance_net_nopool(scale_factor).cuda()
-	DCE_net.load_state_dict(torch.load('snapshots_Zero_DCE++/Epoch99.pth'))
+	DCE_net.load_state_dict(torch.load('snapshots_Zero_DCE++/Epoch0.pth'))
 	start = time.time()
 	enhanced_image,params_maps = DCE_net(data_lowlight)
 
@@ -52,18 +52,31 @@ def lowlight(image_path):
 
 if __name__ == '__main__':
 
+	# with torch.no_grad():
+	#
+	# 	filePath = '/mnt/d/Seaport_satellite_images/RGB_Only_Test'
+	# 	file_list = os.listdir(filePath)
+	# 	sum_time = 0
+	# 	for file_name in file_list:
+	# 		test_list = glob.glob(filePath+file_name+"/*")
+	#
+	# 		for image in test_list:
+	#
+	# 			print(image)
+	# 			sum_time = sum_time + lowlight(image)
+	#
+	# 	print(sum_time)
+
 	with torch.no_grad():
 
-		filePath = 'data/test_data/'	
+		# filePath = '/mnt/d/Seaport_satellite_images/RGB_Only_Test'
+		filePath = '/mnt/d/Seaport_satellite_images_test/'
 		file_list = os.listdir(filePath)
+		print(file_list)
 		sum_time = 0
-		for file_name in file_list:
-			test_list = glob.glob(filePath+file_name+"/*") 
-		    for image in test_list:
-
-				print(image)
-				sum_time = sum_time + lowlight(image)
+		for image in file_list:
+			sum_time = sum_time + lowlight(filePath+image)
 
 		print(sum_time)
-		
+
 
