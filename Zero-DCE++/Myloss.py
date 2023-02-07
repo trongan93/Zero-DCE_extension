@@ -9,21 +9,43 @@ import numpy as np
 
 class L_color(nn.Module):
 
-    def __init__(self):
+    def __init__(self, div):
         super(L_color, self).__init__()
+        self.div = div
 
-    def forward(self, x ):
+    def forward(self, x):
+        b, c, h, w = x.shape
+        # div = 8
+        blockH = h // self.div
+        blockW = w // self.div
+        D = torch.FloatTensor([0]).cuda()
+        for bH in range(self.div):
+            for bW in range(self.div):
+                x_block = x[:, :, bH * blockH:(bH + 1) * blockH, bW * blockW:(bW + 1) * blockW]
+                x_block_reshape = torch.reshape(x_block, (b, c, blockH * blockW))
+                mean_rgb = torch.mean(x_block, [2, 3], keepdim=True)
+                max_rgb, _ = torch.max(x_block_reshape, 2, keepdim=True)
+                min_rgb, _ = torch.min(x_block_reshape, 2, keepdim=True)
+                meanR, meanG, meanB = torch.split(mean_rgb, 1, dim=1)
+                maxR, maxG, maxB = torch.split(max_rgb, 1, dim=1)
+                minR, minG, minB = torch.split(min_rgb, 1, dim=1)
+                for ibatch in range(b):
+                    if minR[ibatch] > maxG[ibatch] or maxR[ibatch] < minG[ibatch]:
+                        D += 0
+                    else:
+                        D += torch.pow(meanR[ibatch] - meanG[ibatch], 2).squeeze()
 
-        b,c,h,w = x.shape
+                    if minG[ibatch] > maxB[ibatch] or maxG[ibatch] < minB[ibatch]:
+                        D += 0
+                    else:
+                        D += torch.pow(meanG[ibatch] - meanB[ibatch], 2).squeeze()
 
-        mean_rgb = torch.mean(x,[2,3],keepdim=True)
-        mr,mg, mb = torch.split(mean_rgb, 1, dim=1)
-        Drg = torch.pow(mr-mg,2)
-        Drb = torch.pow(mr-mb,2)
-        Dgb = torch.pow(mb-mg,2)
-        k = torch.pow(torch.pow(Drg,2) + torch.pow(Drb,2) + torch.pow(Dgb,2),0.5)
+                    if minR[ibatch] > maxB[ibatch] or maxR[ibatch] < minB[ibatch]:
+                        D += 0
+                    else:
+                        D += torch.pow(meanR[ibatch] - meanB[ibatch], 2).squeeze()
 
-
+        k = D / (self.div * self.div)
         return k
 
 			
