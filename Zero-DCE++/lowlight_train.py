@@ -43,7 +43,7 @@ def train(config):
 
 
 
-	L_color = Myloss.L_color()
+	L_color = Myloss.L_color(8)
 	L_spa = Myloss.L_spa()
 	L_exp = Myloss.L_exp(16)
 	# L_exp = Myloss.L_exp(16,0.6)
