@@ -86,13 +86,22 @@ if __name__ == '__main__':
 
 	with torch.no_grad():
 
-		# filePath = '/mnt/d/Seaport_satellite_images/RGB_Only_Test'
-		filePath = '/mnt/d/Seaport_satellite_images_test/'
-		file_list = os.listdir(filePath)
-		print(file_list)
+		# filePath = '../ZeroDCE_DataSet/test/'
+		filePath = "/mnt/d/SeaportDataset/test_set_4"
+		# filePath = "/mnt/d/test_img/1920x1200/8BIT/COLOR"
+		# file_list = os.listdir(filePath)
+		# print(file_list)
+
+		target_path = './test_output_seaport/set4'
+		os.makedirs(target_path, exist_ok=True)
 		sum_time = 0
-		for image in file_list:
-			sum_time = sum_time + lowlight(filePath+image)
+		for file_name in filePath:
+			test_list = glob.glob(filePath + file_name + "/*")
+			print(test_list)
+			os.makedirs(target_path + file_name, exist_ok=True)
+			for image in test_list:
+				print(image)
+				sum_time = sum_time + lowlight(image)
 
 		print(sum_time)
 
