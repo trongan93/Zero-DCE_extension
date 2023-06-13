@@ -17,7 +17,7 @@ import time
 
 def lowlight(image_path):
 	os.environ['CUDA_VISIBLE_DEVICES']='0'
-	scale_factor = 12
+	scale_factor = 1
 	data_lowlight = Image.open(image_path)
 
  
