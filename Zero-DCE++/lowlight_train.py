@@ -84,8 +84,8 @@ def train(config):
 				print("Loss at iteration", iteration+1, ":", loss.item())
 			if ((iteration+1) % config.snapshot_iter) == 0:
 				
-				# torch.save(DCE_net.state_dict(), config.snapshots_folder + "Epoch" + str(epoch) + '.pth')
-				torch.save(DCE_net.module.state_dict(), config.snapshots_folder + "Epoch" + str(epoch) + '.pth') #parallel model
+				torch.save(DCE_net.state_dict(), config.snapshots_folder + "Epoch" + str(epoch) + '.pth') #saving the parametter when train with single GPUs
+				# torch.save(DCE_net.module.state_dict(), config.snapshots_folder + "Epoch" + str(epoch) + '.pth') #saving the parametter when train with parallel GPUs
 
 
 
