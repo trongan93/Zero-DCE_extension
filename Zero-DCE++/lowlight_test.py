@@ -35,6 +35,23 @@ def lowlight(image_path):
 
 	DCE_net = model.enhance_net_nopool(scale_factor).cuda()
 	DCE_net.load_state_dict(torch.load('snapshots_Zero_DCE++/Epoch0.pth'))
+
+	# Show the model parameters
+	total_params = sum(
+		param.numel() for param in DCE_net.parameters()
+	)
+	print(total_params)
+	trainable_params = sum(
+		p.numel() for p in DCE_net.parameters() if p.requires_grad
+	)
+	print(trainable_params)
+
+	# Compuatation complexity of network
+	from ptflops import get_model_complexity_info
+	macs, params = get_model_complexity_info(DCE_net, (3,h,w), as_strings=True, print_per_layer_stat=True, verbose=True)
+	print('{:<30}  {:<8}'.format('Computational complexity: ', macs))
+	print('{:<30}  {:<8}'.format('Number of parameters: ', params))
+
 	start = time.time()
 	enhanced_image,params_maps = DCE_net(data_lowlight)
 
