@@ -31,8 +31,8 @@ def train(config):
 	os.environ['CUDA_VISIBLE_DEVICES']='0,1'
 	num_gpus = 2
 	scale_factor = config.scale_factor
-	# DCE_net = model.enhance_net_nopool(scale_factor).cuda()
-	DCE_net = torch.nn.parallel.DataParallel(model.enhance_net_nopool(scale_factor).cuda(), device_ids=list(range(num_gpus)), dim=0)
+	DCE_net = model.enhance_net_nopool(scale_factor).cuda() # train with 1 GPUs
+	# DCE_net = torch.nn.parallel.DataParallel(model.enhance_net_nopool(scale_factor).cuda(), device_ids=list(range(num_gpus)), dim=0) # train with multiple GPUs
 
 	# DCE_net.apply(weights_init)
 	if config.load_pretrain == True:
